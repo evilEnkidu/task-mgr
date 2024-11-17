@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% csrf_token %}
 {% block title %}
 Issues Manager
 {% endblock %}
@@ -9,64 +9,87 @@ Issues Manager
     <div class="row align-items-start">
         <div class="col">
             <h3>To Do</h3>
-            {% for issue in to_do_list %}
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">{{issue.summary}}</h5>
-                    <small>Reporter: {{issue.reporter}} | Created on: {{issue.created_on}}</small>
-                    <p class="card-text">{{issue.description|truncatechars:64}}</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="badge bg-{{ issue.priority.name|lower }}">{{ issue.priority }}</span>
-                        <a href="{% url 'issues:detail' issue.id %}" class="btn btn-sm btn-primary">Details</a>
+            <div class="dropzone" data-status="to do">
+                {% for issue in to_do_list %}
+                <div class="card mb-3" draggable="true" data-issue-id="{{ issue.id }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ issue.summary }}</h5>
+                        <small>Reporter: {{ issue.reporter }} | Created on: {{ issue.created_on }}</small>
+                        <p class="card-text">{{ issue.description|truncatechars:64 }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-{{ issue.priority.name|lower }}">{{ issue.priority }}</span>
+                            <a href="{% url 'issues:detail' issue.id %}" class="btn btn-sm btn-primary">Details</a>
+                        </div>
+                        <div class="mt-2">
+                            {% if issue.assignee %}
+                                <strong>Assignee:</strong> {{ issue.assignee }}
+                            {% else %}
+                                <strong>Assignee:</strong> Not Assigned
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
+                {% empty %}
+                <p class="text-muted">No issues to do</p>
+                {% endfor %}
             </div>
-            {% empty %}
-            <p class="text-muted">No issues to do</p>
-            {% endfor %}
         </div>
 
         <div class="col">
             <h3>In Progress</h3>
-            {% for issue in in_progress_list %}
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">{{issue.summary}}</h5>
-                    <small>Reporter: {{issue.reporter}} | Created on: {{issue.created_on}}</small>
-                    <p class="card-text">{{issue.description|truncatechars:64}}</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="badge bg-{{ issue.priority.name|lower }}">{{ issue.priority }}</span>
-                        <a href="{% url 'issues:detail' issue.id %}" class="btn btn-sm btn-primary">Details</a>
+            <div class="dropzone" data-status="in progress">
+                {% for issue in in_progress_list %}
+                <div class="card mb-3" draggable="true" data-issue-id="{{ issue.id }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ issue.summary }}</h5>
+                        <small>Reporter: {{ issue.reporter }} | Created on: {{ issue.created_on }}</small>
+                        <p class="card-text">{{ issue.description|truncatechars:64 }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-{{ issue.priority.name|lower }}">{{ issue.priority }}</span>
+                            <a href="{% url 'issues:detail' issue.id %}" class="btn btn-sm btn-primary">Details</a>
+                        </div>
+                        <div class="mt-2">
+                            {% if issue.assignee %}
+                                <strong>Assignee:</strong> {{ issue.assignee }}
+                            {% else %}
+                                <strong>Assignee:</strong> Not Assigned
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
+                {% empty %}
+                <p class="text-muted">No issues in progress</p>
+                {% endfor %}
             </div>
-            {% empty %}
-            <p class="text-muted">No issues in progress</p>
-            {% endfor %}
         </div>
 
         <div class="col">
             <h3>Done</h3>
-            {% for issue in done_list %}
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">{{issue.summary}}</h5>
-                    <small>Reporter: {{issue.reporter}} | Created on: {{issue.created_on}}</small>
-                    <p class="card-text">{{issue.description|truncatechars:64}}</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="badge bg-{{ issue.priority.name|lower }}">{{ issue.priority }}</span>
-                        <a href="{% url 'issues:detail' issue.id %}" class="btn btn-sm btn-primary">Details</a>
+            <div class="dropzone" data-status="done">
+                {% for issue in done_list %}
+                <div class="card mb-3" draggable="true" data-issue-id="{{ issue.id }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ issue.summary }}</h5>
+                        <small>Reporter: {{ issue.reporter }} | Created on: {{ issue.created_on }}</small>
+                        <p class="card-text">{{ issue.description|truncatechars:64 }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-{{ issue.priority.name|lower }}">{{ issue.priority }}</span>
+                            <a href="{% url 'issues:detail' issue.id %}" class="btn btn-sm btn-primary">Details</a>
+                        </div>
+                        <div class="mt-2">
+                            {% if issue.assignee %}
+                                <strong>Assignee:</strong> {{ issue.assignee }}
+                            {% else %}
+                                <strong>Assignee:</strong> Not Assigned
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
+                {% empty %}
+                <p class="text-muted">No completed issues</p>
+                {% endfor %}
             </div>
-            {% empty %}
-            <p class="text-muted">No completed issues</p>
-            {% endfor %}
         </div>
-    </div>
-
-    <div class="mt-4">
-        <a href="{% url 'issues:new' %}" class="btn btn-success">Create New Issue</a>
     </div>
 </div>
 
@@ -74,5 +97,121 @@ Issues Manager
     .badge.bg-high { background-color: #dc3545; }
     .badge.bg-medium { background-color: #ffc107; }
     .badge.bg-low { background-color: #28a745; }
+    
+    .dropzone {
+        min-height: 200px;
+        padding: 10px;
+        border: 2px dashed #ccc;
+        border-radius: 4px;
+        margin-bottom: 10px;
+    }
+    
+    .dropzone.drag-over {
+        background-color: rgba(0, 123, 255, 0.1);
+        border-color: #007bff;
+    }
+    
+    .card.dragging {
+        opacity: 0.5;
+    }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const cards = document.querySelectorAll('.card[draggable="true"]');
+    const dropzones = document.querySelectorAll('.dropzone');
+    
+    let draggedCard = null;
+
+    cards.forEach(card => {
+        card.addEventListener('dragstart', handleDragStart);
+        card.addEventListener('dragend', handleDragEnd);
+        
+        card.querySelector('.btn-primary').addEventListener('mousedown', e => {
+            e.stopPropagation();
+        });
+    });
+
+    dropzones.forEach(dropzone => {
+        dropzone.addEventListener('dragover', handleDragOver);
+        dropzone.addEventListener('dragleave', handleDragLeave);
+        dropzone.addEventListener('drop', handleDrop);
+    });
+
+    function handleDragStart(e) {
+        draggedCard = this;
+        this.classList.add('dragging');
+        
+        e.dataTransfer.setData('text/plain', this.dataset.issueId);
+    }
+
+    function handleDragEnd(e) {
+        this.classList.remove('dragging');
+        draggedCard = null;
+    }
+
+    function handleDragOver(e) {
+        e.preventDefault();
+        this.classList.add('drag-over');
+    }
+
+    function handleDragLeave(e) {
+        this.classList.remove('drag-over');
+    }
+
+    function handleDrop(e) {
+        e.preventDefault();
+        this.classList.remove('drag-over');
+
+        if (draggedCard) {
+            const issueId = draggedCard.dataset.issueId;
+            const newStatus = this.dataset.status;
+            
+            updateIssueStatus(issueId, newStatus)
+                .then(response => {
+                    if (response.ok) {
+                        this.appendChild(draggedCard);
+                    } else {
+                        alert('Status changed successfully, refresh the site.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while updating the issue status.');
+                });
+        }
+    }
+
+    function updateIssueStatus(issueId, newStatus) {
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    
+    console.log(`Updating issue ${issueId} to status: ${newStatus}`); 
+    
+    return fetch('{% url "issues:update_status" %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+        },
+        body: JSON.stringify({
+            issue_id: issueId,
+            status: newStatus
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(data => {
+                throw new Error(data.error || 'Failed to update status');
+            });
+        }
+        return response.json();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert(error.message || 'An error occurred while updating the issue status.');
+        throw error;
+    });
+}
+});
+</script>
 {% endblock %}

@@ -22,9 +22,9 @@ class Issue(models.Model):
     reporter = models.ForeignKey(
         get_user_model(),
         on_delete=models.CASCADE,
-        related_name="reported_issues"  # Changed from "assignee"
+        related_name="reported_issues"  
     )
-    assignee = models.ForeignKey(  # Added assignee field
+    assignee = models.ForeignKey(  
         get_user_model(),
         on_delete=models.SET_NULL,
         null=True,

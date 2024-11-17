@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}
+Issue Details: {{ object.summary }}
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="card-title mb-0">{{ object.summary }}</h2>
+                </div>
+                <div class="card-body">
+                    <p class="mb-3"><strong>Description:</strong></p>
+                    <p>{{ object.description }}</p>
+
+                    <hr>
+
+                    <p class="mb-2">
+                        <strong>Reporter:</strong> {{ object.reporter }}
+                    </p>
+                    <p class="mb-2">
+                        <strong>Assignee:</strong> {{ object.assignee|default:"Unassigned" }}
+                    </p>
+                    <p class="mb-2">
+                        <strong>Priority:</strong>
+                        <span class="badge bg-{{ object.priority.name|lower }}">
+                            {{ object.priority }}
+                        </span>
+                    </p>
+                    <p class="mb-2">
+                        <strong>Status:</strong> {{ object.status }}
+                    </p>
+                    <p class="mb-2">
+                        <strong>Created On:</strong> {{ object.created_on|date:"F j, Y, g:i a" }}
+                    </p>
+
+                    <hr>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'issues:list' %}" class="btn btn-secondary">Back to List</a>
+                        <div>
+                            <a href="{% url 'issues:edit' object.id %}" class="btn btn-warning me-2">
+                                Edit Issue
+                            </a>
+                            <a href="{% url 'issues:delete' object.id %}" class="btn btn-danger">
+                                Delete Issue
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .badge.bg-high { background-color: #dc3545; }
+    .badge.bg-medium { background-color: #ffc107; }
+    .badge.bg-low { background-color: #28a745; }
+</style>
+{% endblock %}
